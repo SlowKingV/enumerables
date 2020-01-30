@@ -9,7 +9,7 @@ module Enumerable
             arr = self.flatten
             incr = 2;
         else
-            arr = self
+            arr = self.to_a
             incr = 1;
         end
 
@@ -55,6 +55,24 @@ module Enumerable
         end
     end
 
+    def my_all?(pattern = nil)
+        arr = to_a
+        all_true = true
+
+        for i in (0...arr.length)
+            if all_true == true
+                if pattern
+                    all_true = !!(arr[i] =~ pattern)
+                else
+                    block_given? ? all_true = !!(yield(arr[i])) : all_true = !!arr[i]
+                end
+            else
+                break
+            end
+        end
+
+        return all_true
+    end
 end
 
 ### TESTING my_each
@@ -74,3 +92,8 @@ p ["hi", "boys", "this", "is", "awesome"].my_select { |v| v =~ /i/ }
 hash = {hi: 2, boys: 4, this: 4, is: 2, awesome: 7}
 p hash.my_select { |k, v| k =~ /i/ }
 p hash.my_select { |k, v| v >= 4 }
+
+### TESTING my_all
+puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_all? { |obj| obj < 10 }
+puts ["hello", 7, "", 0, nil].my_all?
+puts ["cat", "rat", "hawk", "hamster"].my_all?(/a/)
