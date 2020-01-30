@@ -97,3 +97,5 @@ p hash.my_select { |k, v| v >= 4 }
 puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_all? { |obj| obj < 10 }
 puts ["hello", 7, "", 0, nil].my_all?
 puts ["cat", "rat", "hawk", "hamster"].my_all?(/a/)
+hash = {normal: "hello", question: "hello?", shout: "hi!!"}
+puts hash.all? { |obj| (obj[0].is_a? Symbol) && (obj[1] =~ /^h/) }
