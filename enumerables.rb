@@ -73,6 +73,26 @@ module Enumerable
 
         return all_true
     end
+
+    def my_any?(pattern = nil)
+        arr = to_a
+        any_true = false
+
+        for i in (0...arr.length)
+            if any_true == false
+                if pattern
+                    any_true = !!(arr[i] =~ pattern)
+                else
+                    block_given? ? any_true = !!(yield(arr[i])) : any_true = !!arr[i]
+                end
+            else
+                break
+            end
+        end
+
+        return any_true
+    end
+
 end
 
 ### TESTING my_each
@@ -98,4 +118,11 @@ puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_all? { |obj| obj < 10 }
 puts ["hello", 7, "", 0, nil].my_all?
 puts ["cat", "rat", "hawk", "hamster"].my_all?(/a/)
 hash = {normal: "hello", question: "hello?", shout: "hi!!"}
-puts hash.all? { |obj| (obj[0].is_a? Symbol) && (obj[1] =~ /^h/) }
+puts hash.my_all? { |obj| (obj[0].is_a? Symbol) && (obj[1] =~ /^h/) }
+
+### TESTING my_any
+puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_any? { |obj| obj % 10 == 0 }
+puts [nil, false, [], 0, nil].my_any?
+puts ["cat", "rat", "hawk", "hamster"].my_any?(/r$/)
+hash = {normal: "hello", question: "hello?", shout: "hi!!"}
+puts hash.my_any? { |obj| (obj[0] == :question) && (obj[1] =~ /\?$/) }
