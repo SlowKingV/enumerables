@@ -19,7 +19,7 @@ module Enumerable
             i += incr
         end
     end
-    
+
     def my_each_with_index
         return to_enum unless block_given?
         arr = to_a
@@ -31,8 +31,8 @@ module Enumerable
 
 end
 
-[1, 2, 3, 4, 5, 6].my_each { |k, v| puts "#{k} tiene #{v} letras!" }
-{zapato: 6, hoja: 4, canica: 6, cal: 3, tormenta: 8}.my_each { |k, v| puts "#{k} tiene #{v} letras!" }
+# [1, 2, 3, 4, 5, 6].my_each { |k, v| puts "#{k} tiene #{v} letras!" }
+# {zapato: 6, hoja: 4, canica: 6, cal: 3, tormenta: 8}.my_each { |k, v| puts "#{k} tiene #{v} letras!" }
 
 ### TESTING
 ["cat", "dog", "bunny", "hamster"].my_each_with_index { |o, i| puts "#{o} is number #{i}"}
