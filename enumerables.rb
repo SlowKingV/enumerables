@@ -97,6 +97,24 @@ module Enumerable
         !any_true = self.my_any?(pattern, &block)
     end
 
+    def my_count(obj = nil)
+        arr = to_a
+        count = 0
+
+        if obj
+            arr.my_each { |val|
+                count += 1 if val == obj
+            }
+        elsif block_given?
+            arr.my_each { |val|
+                count += 1 if yield(val)
+            }
+        else
+            count = arr.length
+        end
+        return count
+    end
+
 end
 
 
@@ -130,8 +148,13 @@ puts [nil, false, [], 0, ""].my_any?
 puts ["cat", "rat", "hawk", "hamster"].my_any?(/r$/)
 puts greet.my_any? { |obj| (obj[0] == :question) && (obj[1] =~ /\?$/) }
 
-## TESTING my_none?
+### TESTING my_none?
 puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_none? { |obj| obj % 10 == 0 }
 puts ["", 0, [], nil, false].my_none?
 puts ["cat", "rat", "hawk", "hamster"].my_none?(/(^a|a$)/)
 puts greet.my_none? { |obj| (obj[0].length > 5) && (obj[1] =~ /[^\!\?]$/) }
+
+### TESTING my_count
+puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_count
+puts [1, "hi", :prefix, 2.345, :count, true, nil, ["string"], :incr].my_count(2.345)
+puts [1, "hi", :prefix, 2.345, :count, true, nil, ["string"], :incr].my_count { |val| val.is_a? Symbol}
