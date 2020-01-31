@@ -114,6 +114,22 @@ module Enumerable
         end
         return count
     end
+    
+    def my_map
+        return to_enum unless block_given?
+        arr = to_a
+        new_arr = []
+        arr.my_each_with_index { |v, i| new_arr[i] = yield(v) }
+        return new_arr
+    end
+
+    def my_map!
+        return to_enum unless block_given?
+        raise NoMethodError if self.class != Array && self.class != Range
+
+        self.my_each_with_index { |v, i| self[i] = yield(v) }
+        return self
+    end
 
 end
 
@@ -158,3 +174,12 @@ puts greet.my_none? { |obj| (obj[0].length > 5) && (obj[1] =~ /[^\!\?]$/) }
 puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_count
 puts [1, "hi", :prefix, 2.345, :count, true, nil, ["string"], :incr].my_count(2.345)
 puts [1, "hi", :prefix, 2.345, :count, true, nil, ["string"], :incr].my_count { |val| val.is_a? Symbol}
+
+### TESTING my_map
+arr = [1, 2, 3, 4, 5, 6]
+p arr.my_map { |v| v * v }
+p arr
+p arr.my_map! { |v| v * v }
+p arr
+p greet.my_map { |obj| obj }
+p greet.my_map! { |obj| obj } #Should raise an exception as #map! isn't valid for Hashes
