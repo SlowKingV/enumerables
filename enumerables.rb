@@ -93,36 +93,45 @@ module Enumerable
         return any_true
     end
 
+    def my_none?(pattern = nil, &block)
+        !any_true = self.my_any?(pattern, &block)
+    end
+
 end
 
+
+greet = {normal: "hello", question: "hello?", shout: "hi!!"}
 ### TESTING my_each
-[1, 2, 3, 4, 5, 6].my_each { |k, v| puts "#{k} tiene #{v} letras!" }
+[1, 2, 3, 4, 5, 6].my_each { |v| print v.to_s + " " }
+puts
 {zapato: 6, hoja: 4, canica: 6, cal: 3, tormenta: 8}.my_each { |k, v| puts "#{k} tiene #{v} letras!" }
 
 ### TESTING my_each_with_index
 ["cat", "dog", "bunny", "hamster"].my_each_with_index { |o, i| puts "#{o} is number #{i}"}
 {cat: 3, dog: 3, bunny: 5, hamster: 7}.my_each_with_index { |o, i| puts "#{o[0].to_s} has #{o[1]} characters and is number #{i}"}
-["cat", "dog", "bunny", "hamster"].each_with_index { |o, i| puts "#{o} is number #{i}"}
-{cat: 3, dog: 3, bunny: 5, hamster: 7}.each_with_index { |o, i| puts "#{o[0].to_s} has #{o[1]} characters and is number #{i}"}
 
 ### TESTING my_select
 p [1, 2, 3, 4, 5, 6].my_select { |v| v > 3 }
 p ["hi", "boys", "this", "is", "awesome"].my_select { |v| v =~ /i/ }
+phrase = {hi: 2, boys: 4, this: 4, is: 2, awesome: 7}
+p phrase.my_select { |k, v| k =~ /i/ }
+p phrase.my_select { |k, v| v >= 4 }
+p phrase.my_select { |k, v| (k =~ /o/) && (v >= 4)}
 
-hash = {hi: 2, boys: 4, this: 4, is: 2, awesome: 7}
-p hash.my_select { |k, v| k =~ /i/ }
-p hash.my_select { |k, v| v >= 4 }
-
-### TESTING my_all
+### TESTING my_all?
 puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_all? { |obj| obj < 10 }
 puts ["hello", 7, "", 0, nil].my_all?
 puts ["cat", "rat", "hawk", "hamster"].my_all?(/a/)
-hash = {normal: "hello", question: "hello?", shout: "hi!!"}
-puts hash.my_all? { |obj| (obj[0].is_a? Symbol) && (obj[1] =~ /^h/) }
+puts greet.my_all? { |obj| (obj[0].is_a? Symbol) && (obj[1] =~ /^h/) }
 
-### TESTING my_any
+### TESTING my_any?
 puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_any? { |obj| obj % 10 == 0 }
-puts [nil, false, [], 0, nil].my_any?
+puts [nil, false, [], 0, ""].my_any?
 puts ["cat", "rat", "hawk", "hamster"].my_any?(/r$/)
-hash = {normal: "hello", question: "hello?", shout: "hi!!"}
-puts hash.my_any? { |obj| (obj[0] == :question) && (obj[1] =~ /\?$/) }
+puts greet.my_any? { |obj| (obj[0] == :question) && (obj[1] =~ /\?$/) }
+
+## TESTING my_none?
+puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_none? { |obj| obj % 10 == 0 }
+puts ["", 0, [], nil, false].my_none?
+puts ["cat", "rat", "hawk", "hamster"].my_none?(/(^a|a$)/)
+puts greet.my_none? { |obj| (obj[0].length > 5) && (obj[1] =~ /[^\!\?]$/) }
