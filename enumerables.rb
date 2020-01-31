@@ -122,7 +122,7 @@ greet = {normal: "hello", question: "hello?", shout: "hi!!"}
 ### TESTING my_each
 [1, 2, 3, 4, 5, 6].my_each { |v| print v.to_s + " " }
 puts
-{zapato: 6, hoja: 4, canica: 6, cal: 3, tormenta: 8}.my_each { |k, v| puts "#{k} tiene #{v} letras!" }
+{shoes: 5, shirt: 5, pants: 4, tie: 3, smoking: 7}.my_each { |k, v| puts "#{k} has #{v} letters!" }
 
 ### TESTING my_each_with_index
 ["cat", "dog", "bunny", "hamster"].my_each_with_index { |o, i| puts "#{o} is number #{i}"}
