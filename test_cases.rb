@@ -47,12 +47,12 @@ p arr #Should print the original Array
 p arr.my_map! { |v| v * v } #Should replace every value in the Array with its number multiplied by itself
 p arr #Should print the modified Array
 p greet.my_map { |obj| obj } #Should return every key-value pair from the Hash into it's own array
-p greet.my_map! { |obj| obj } #Should raise an exception as #map! isn't valid for Hashes
+# p greet.my_map! { |obj| obj } #Should raise an exception as #map! isn't valid for Hashes
 
 ### TESTING my_inject
 puts [1, 2, 3, 4, 5, 6].my_inject(:+) #Should return the sum of all numbers
 puts [1, 2, 3, 4, 5, 6].my_inject(10, :+) #Should return the sum of all numbers starting with 10
 puts [1, 2, 3, 4, 5, 6].my_inject { |memo, val| memo * 10 + val } #Should return an Integer which includes all the array numbers
 puts [1, 2, 3, 4, 5, 6].my_inject(654321) { |memo, val| memo * 10 + val } #Should return an Integer which includes all the array numbers two times
-puts [1, 2, 3, 4, 5, 6].my_inject(10, :+) { |memo, val| memo * 10 + val } #Should raise an Exception because this method can't have two operators (:op + &block)
-puts [1, 2, 3, 4, 5, 6].my_inject #Should raise an Exception because this method need at least one argument (:op)
+# puts [1, 2, 3, 4, 5, 6].my_inject(10, :+) { |memo, val| memo * 10 + val } #Should raise an Exception because this method can't have two operators (:op + &block)
+# puts [1, 2, 3, 4, 5, 6].my_inject #Should raise an Exception because this method need at least one argument (:op)
