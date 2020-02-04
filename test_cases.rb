@@ -53,6 +53,8 @@ p arr.my_map { |v| v * v } #Should return an Array with every number multiplied 
 p arr #Should print the original Array
 p arr.my_map! { |v| v * v } #Should replace every value in the Array with its number multiplied by itself
 p arr #Should print the modified Array
+code = Proc.new { |v| v + 1 }
+p arr.my_map(&code)
 p greet.my_map { |obj| obj } #Should return every key-value pair from the Hash into it's own array
 # p greet.my_map! { |obj| obj } #Should raise an exception as #map! isn't valid for Hashes
 puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
