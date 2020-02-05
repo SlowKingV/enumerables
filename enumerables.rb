@@ -46,9 +46,9 @@ module Enumerable
       end
     else
       match = []
-      (0...arr.length).my_each do |v|
-        found = yield(v)
-        match << v if found
+      arr.my_each do |val|
+        found = yield(val)
+        match << val if found
       end
     end
     match
@@ -58,7 +58,7 @@ module Enumerable
     arr = to_a
     all_true = true
 
-    (0...arr.length).my_each do |v|
+    arr.my_each do |v|
       all_true = if pattern
                    !!(v =~ pattern)
                  else
@@ -74,13 +74,13 @@ module Enumerable
     arr = to_a
     any_true = false
 
-    (0...arr.length).my_each do |v|
+    arr.my_each do |v|
       any_true = if pattern
                    !!(v =~ pattern)
                  else
                    block_given? ? !!yield(v) : !!v
                  end
-      break unless all_true
+      break unless any_true
     end
 
     any_true
