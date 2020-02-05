@@ -95,3 +95,9 @@ puts([1, 2, 3, 4, 5, 6].my_inject { |memo, val| memo * 10 + val })
 # => Should return an Integer which includes all the array numbers
 puts [1, 2, 3, 4, 5, 6].my_inject(654_321) { |memo, val| memo * 10 + val }
 # => Should return an Integer which includes all the array numbers two times
+
+def multiply_els(arr)
+  arr.my_inject(:*)
+end
+puts multiply_els([1, 2, 3, 4, 5, 6])
+# => Should return the product of multiply all the array elements
