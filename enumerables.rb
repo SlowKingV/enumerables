@@ -2,20 +2,12 @@ module Enumerable
   def my_each
     return to_enum unless block_given?
 
-    incr = 0
-    arr_kind = self.class
-    if arr_kind == Hash
-      arr = flatten
-      incr = 2
-    else
-      arr = to_a
-      incr = 1
-    end
-
     i = 0
+    arr = to_a
+    arr.flatten! if is_a? Hash
     while i < arr.length
-      arr_kind == Hash ? yield(arr[i], arr[i + 1]) : yield(arr[i])
-      i += incr
+      yield(arr[i])
+      i += 1
     end
   end
 
@@ -23,67 +15,54 @@ module Enumerable
     return to_enum unless block_given?
 
     arr = to_a
-
-    for i in 0...arr.length
+    i = 0
+    i.upto(arr.length - 1) do
       yield(arr[i], i)
+      i += 1
     end
   end
 
   def my_select
     return to_enum unless block_given?
 
-    kind = self.class
-    arr = to_a
-
-    if kind == Hash
-      match = {}
-      flat = arr.flatten
-      i = 0
-      while i < flat.length
-        found = yield(flat[i], flat[i + 1])
-        match[flat[i]] = flat[i + 1] if found
-        i += 2
-      end
+    match = []
+    if is_a? Hash
+      to_a.my_each { |obj| match << [obj[0], obj[1]] if yield(obj[0], obj[1]) }
     else
-      match = []
-      arr.my_each do |val|
-        found = yield(val)
-        match << val if found
-      end
+      to_a.my_each { |val| match << val if yield(val) }
     end
     match
   end
 
-  def my_all?(pattern = nil)
-    arr = to_a
-    all_true = true
-
-    arr.my_each do |v|
-      all_true = if pattern
-                   !!(v =~ pattern)
-                 else
-                   block_given? ? !!yield(v) : !!v
-                 end
-      break unless all_true
+  def pattern_match(pattern, val, block)
+    if pattern
+      if pattern.is_a? Class then val.is_a? pattern
+      elsif pattern.is_a? Regexp then pattern.match?(val)
+      else val == pattern
+      end
+    elsif block then block.call(val)
+    else !val.nil?
     end
-
-    all_true
   end
 
-  def my_any?(pattern = nil)
+  def my_all?(pattern = nil, &block)
+    all = true
     arr = to_a
-    any_true = false
-
-    arr.my_each do |v|
-      any_true = if pattern
-                   !!(v =~ pattern)
-                 else
-                   block_given? ? !!yield(v) : !!v
-                 end
-      break unless any_true
+    arr.my_each do |val|
+      all = pattern_match(pattern, val, block)
+      break unless all
     end
+    all
+  end
 
-    any_true
+  def my_any?(pattern = nil, &block)
+    arr = to_a
+    any = false
+    arr.my_each do |val|
+      any = pattern_match(pattern, val, block)
+      break if any
+    end
+    any
   end
 
   def my_none?(pattern = nil, &block)
@@ -93,17 +72,11 @@ module Enumerable
   def my_count(obj = nil)
     arr = to_a
     count = 0
-
-    if obj
-      arr.my_each do |val|
-        count += 1 if val == obj
+    arr.my_each do |val|
+      if obj then count += 1 if val == obj
+      elsif block_given? then count += 1 if yield(val)
+      else count = arr.length
       end
-    elsif block_given?
-      arr.my_each do |val|
-        count += 1 if yield(val)
-      end
-    else
-      count = arr.length
     end
     count
   end
@@ -117,37 +90,25 @@ module Enumerable
     new_arr
   end
 
-  def my_map!
-    return to_enum unless block_given?
-    raise NoMethodError if self.class != Array && self.class != Range
-
-    my_each_with_index { |v, i| self[i] = yield(v) }
-    self
-  end
-
-  def my_inject(arg1 = nil, arg2 = nil)
-    raise ArgumentError unless (arg1 && !block_given?) || (!arg2 && block_given?)
-
-    if arg1 && !arg2 && !block_given?
-      opr = arg1
-      ini = nil
-    else
-      ini = arg1
-      opr = arg2
-    end
-
+  def my_inject(*args)
     arr = to_a
-    ini_given = ini ? true : false
-    ini = arr[0] unless ini_given
-    arr.my_each_with_index do |val, i|
-      if opr
-        met = ini.method(opr)
-        ini = met.call(val) unless !ini_given && i.zero?
-      else
-        ini = yield(ini, val) unless !ini_given && i.zero?
+    memo = arr[0]
+    case args.size
+    when 1
+      if block_given? then memo = args[0]
+      else opr = args [0]
       end
-    end
+    when 2
+      opr = args[1]
+      memo = args[0]
+    else
+      raise ArgumentError unless block_given?
 
-    ini
+      arr.shift
+    end
+    arr.my_each do |val|
+      memo = opr ? memo.method(opr).call(val) : yield(memo, val)
+    end
+    memo
   end
 end

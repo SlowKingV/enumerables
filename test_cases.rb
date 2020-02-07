@@ -4,8 +4,8 @@ puts 'TESTING my_each'
 [1, 2, 3, 4, 5, 6].my_each { |v| print v.to_s + ' ' }
 # => Should print every number next to the other
 puts
-{ shoes: 5, shirt: 5, pants: 4, tie: 3, smoking: 7 }.my_each { |k, v| puts "#{k} has #{v} letters!" }
-# => Should print the each key name and it's value
+{ shoes: 5, shirt: 5, pants: 4, tie: 3, smoking: 7 }.to_a.my_each { |val| p val }
+# => Should print all the keys and values
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 
 puts 'TESTING my_each_with_index'
@@ -18,14 +18,14 @@ puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 puts 'TESTING my_select'
 p([1, 2, 3, 4, 5, 6].my_select { |v| v > 3 })
 # => Should print every number bigger than 3
-p(%w[hi boys this is awesome].my_select { |v| v =~ /i/ })
+p(%w[hi boys this is awesome].my_select { |v| /i/.match?(v) })
 # => Should print every string with an 'i' within
 phrase = { hi: 2, boys: 4, this: 4, is: 2, awesome: 7 }
-p(phrase.my_select { |k, _v| k =~ /i/ })
+p(phrase.my_select { |k, _v| /i/.match?(k) })
 # => Should print every key-value pair whose key includes an 'i'
 p(phrase.my_select { |_k, v| v >= 4 })
 # => Should print every key-value pair whose value is equal or bigger than 4
-p(phrase.my_select { |k, v| (k =~ /o/) && (v >= 4) })
+p(phrase.my_select { |k, v| /o/.match?(k) && (v >= 4) })
 # => Should print every key-value pair whose key includes an 'o' and it's value is bigger than 4
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 
@@ -35,9 +35,13 @@ puts([1, 2, 3, 4, 5, 6, 7, 8, 9].my_all? { |obj| obj < 10 })
 # => Should print 'true' since all the values are lower than 10
 puts ['hello', 7, '', 0, nil].my_all?
 # => Should print 'false' since not all the elements are 'truthy' objects
+puts [0, 0, 0, 0, 0, 0, 0, 0].my_all?(0)
+# => Should print 'true' since all the elements are 0
 puts %w[cat rat hawk hamster].my_all?(/a/)
 # => Should print 'true' since all the elements include an 'a'
-puts(greet.my_all? { |obj| (obj[0].is_a? Symbol) && (obj[1] =~ /^h/) })
+puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_all?(Numeric)
+# => Should print 'true' since every element is a number
+puts(greet.my_all? { |obj| (obj[0].is_a? Symbol) && /^h/.match?(obj[1]) })
 # => Should print 'true' since every key is a Symbol and every value starts with an 'h'
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 
@@ -46,9 +50,13 @@ puts([1, 2, 3, 4, 5, 6, 7, 8, 9].my_any? { |obj| (obj % 10).zero? })
 # => Should print 'false' since none of its values is a multiple of 10
 puts [nil, false, [], 0, ''].my_any?
 # => Should print 'true' since at least one of its values is 'truthy'
+puts [nil, false, [], 0, ''].my_any?(0)
+# => Should print 'true' since at least one of its values is 0
 puts %w[cat rat hawk hamster].my_any?(/r$/)
 # => Should print 'true' since at least one of its values ends with 'r'
-puts(greet.my_any? { |obj| (obj[0] == :question) && (obj[1] =~ /\?$/) })
+puts [nil, false, [], 0, ''].my_any?(Float)
+# => Should print 'false' since none of its values is a Float
+puts(greet.my_any? { |obj| (obj[0] == :question) && /\?$/.match?(obj[1]) })
 # => Should print 'true' since at least one of its keys is called :question and its value ends with '?'
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 
@@ -57,8 +65,12 @@ puts([1, 2, 3, 4, 5, 6, 7, 8, 9].my_none? { |obj| (obj % 10).zero? })
 # => Should print 'true' since none of its values is a multiple of 10
 puts ['', 0, [], nil, false].my_none?
 # => Should print 'false' since at least one of its values is 'truthy'
+puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_none?(4)
+# => Should print 'false' since at least one of its values is 4
 puts %w[cat rat hawk hamster].my_none?(/(^a|a$)/)
 # => Should print 'true' since none of its values starts or ends with 'a'
+puts [nil, false, [], 0, ''].my_none?(Float)
+# => Should print 'true' since none of its values is a Float
 puts(greet.my_none? { |obj| (obj[0].length > 5) && (obj[1] =~ /[^\!\?]$/) })
 # => Should print 'false' since at least one of its key names is longer than 5 and ends without '!' or '?'
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
@@ -76,14 +88,6 @@ puts 'TESTING my_map'
 arr = [1, 2, 3, 4, 5, 6]
 p(arr.my_map { |v| v * v })
 # => Should return an Array with every number multiplied by itself
-p arr
-# => Should print the original Array
-p(arr.my_map! { |v| v * v })
-# => Should replace every value in the Array with its number multiplied by itself
-p arr
-# => Should print the modified Array
-p(greet.my_map { |obj| obj })
-# => Should return every key-value pair from the Hash into it's own array
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 
 puts 'TESTING my_inject'
@@ -94,7 +98,7 @@ puts [1, 2, 3, 4, 5, 6].my_inject(10, :+)
 puts([1, 2, 3, 4, 5, 6].my_inject { |memo, val| memo * 10 + val })
 # => Should return an Integer which includes all the array numbers
 puts [1, 2, 3, 4, 5, 6].my_inject(654_321) { |memo, val| memo * 10 + val }
-# => Should return an Integer which includes all the array numbers two times
+# => Should return the Integer '654321123456'
 
 def multiply_els(arr)
   arr.my_inject(:*)
