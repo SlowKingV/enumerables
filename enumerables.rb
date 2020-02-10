@@ -41,7 +41,7 @@ module Enumerable
       else val == pattern
       end
     elsif block then block.call(val)
-    else !val.nil?
+    else val
     end
   end
 
@@ -52,7 +52,7 @@ module Enumerable
       all = pattern_match(pattern, val, block)
       break unless all
     end
-    all
+    all ? true : false
   end
 
   def my_any?(pattern = nil, &block)
@@ -62,7 +62,7 @@ module Enumerable
       any = pattern_match(pattern, val, block)
       break if any
     end
-    any
+    any ? true : false
   end
 
   def my_none?(pattern = nil, &block)
@@ -92,20 +92,21 @@ module Enumerable
 
   def my_inject(*args)
     arr = to_a
-    memo = arr[0]
+
     case args.size
     when 1
-      if block_given? then memo = args[0]
+      if block_given? then arr.unshift(args[0])
       else opr = args [0]
       end
     when 2
       opr = args[1]
-      memo = args[0]
+      arr.unshift(args[0])
     else
       raise ArgumentError unless block_given?
-
-      arr.shift
     end
+
+    memo = arr[0]
+    arr.shift
     arr.my_each do |val|
       memo = opr ? memo.method(opr).call(val) : yield(memo, val)
     end
