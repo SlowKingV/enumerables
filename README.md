@@ -10,7 +10,8 @@
 
 ## Demo
 
-[Live Demo Link](https://livedemo.com)
+You can try the code here:
+[![Run on Repl.it](https://repl.it/badge/github/SlowKingV/enumerables)](https://repl.it/github/SlowKingV/enumerables)
 
 
 ## Getting Started
