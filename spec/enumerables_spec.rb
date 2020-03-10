@@ -24,6 +24,10 @@ describe Enumerable do
       hash_clo.each { |v| expected << "#{v}\n" }
       expect { hash_clo.my_each { |v| p v } }.to output(expected).to_stdout
     end
+
+    it 'Returns an \'Enumerator\' if no block is given' do
+      expect(arr_num.my_each.to_a).to eq(arr_num.each.to_a)
+    end
   end
 
   context '#my_each_with_index' do
@@ -37,6 +41,10 @@ describe Enumerable do
       expected = ''
       hash_clo.each_with_index { |h, i| expected << "#{i}: #{h}\n" }
       expect { hash_clo.my_each_with_index { |h, i| puts "#{i}: #{h}" } }.to output(expected).to_stdout
+    end
+
+    it 'Returns an \'Enumerator\' if no block is given' do
+      expect(arr_num.my_each_with_index.to_a).to eq(arr_num.each_with_index.to_a)
     end
   end
 
@@ -61,91 +69,95 @@ describe Enumerable do
       eval = proc { |k, v| /o/.match?(k) && (v >= 4) }
       expect(hash_word.my_select(&eval)).to eql(hash_word.select(&eval))
     end
+
+    it 'Returns an \'Enumerator\' if no block is given' do
+      expect(arr_num.my_select.to_a).to eq(arr_num.select.to_a)
+    end
   end
 
   context '#my_all?' do
-    it 'Should return true since all the values are lower than 10' do
+    it 'Should return true if all the values return true from the block' do
       expect(arr_num.my_all? { |v| v < 10 }).to eql(arr_num.all? { |v| v < 10 })
     end
 
-    it 'Should return false since not all the elements are truthy' do
+    it 'Should return false if not all the elements are truthy objects' do
       expect(arr_obj.my_all?).to eql(arr_obj.all?)
     end
 
-    it 'Should return true since all the elements are zero' do
+    it 'Should return true if all the elements are the same as the passed value' do
       expect(arr_zero.my_all?(0)).to eql(arr_zero.all?(0))
     end
 
-    it 'Should return true since all the elements include an \'a\'' do
+    it 'Should return true if all the elements match with the given RegExp pattern' do
       expect(arr_animals.my_all?(/a/)).to eql(arr_animals.all?(/a/))
     end
 
-    it 'Should return true since all the elements are Numbers' do
+    it 'Should return true if all the elements are instances of the given class' do
       expect(arr_num.my_all?(Numeric)).to eql(arr_num.all?(Numeric))
     end
 
-    it 'Should return false because they aren\'t truthy elements' do
+    it 'Should return false if any element is \'false\' or \'nil\'' do
       expect(arr_false.my_all?).to eql(arr_false.all?)
     end
 
-    it 'Should return true because they all are \'false\'' do
+    it 'Should return true for \'false\' elements if you pass them as values' do
       expect(arr_false.my_all?(false)).to eql(arr_false.all?(false))
     end
   end
 
   context '#my_any' do
-    it 'Should return false since none of the values is a multiple of 10' do
+    it 'Should return false if none of the values returns true from the block' do
       expect(arr_num.my_any? { |v| (v % 10).zero? }).to eql(arr_num.any? { |v| (v % 10).zero? })
     end
 
-    it 'Should return true since at least one of the values is truthy' do
+    it 'Should return true if any of the values is a truthy object' do
       expect(arr_empty.my_any?).to eql(arr_empty.any?)
     end
 
-    it 'Should return true since at least one of the values is 0' do
+    it 'Should return true if any of the values is equal as the given value' do
       expect(arr_empty.my_any?(0)).to eql(arr_empty.any?(0))
     end
 
-    it 'Should return true since at least one of the values ends with \'r\'' do
+    it 'Should return true if any element match the given RegExp pattern' do
       expect(arr_animals.my_any?(/r$/)).to eql(arr_animals.any?(/r$/))
     end
 
-    it 'Should return false since none of the values is a Float' do
+    it 'Should return false if none of the elements is an instance of the given class' do
       expect(arr_empty.my_any?(Float)).to eql(arr_empty.any?(Float))
     end
 
-    it 'Should return true since at least one of the values is \'false\'' do
+    it 'Should return true for any \'false\' elements if you give it as a value' do
       expect(arr_false.my_any?(false)).to eql(arr_false.any?(false))
     end
   end
 
   context '#my_none?' do
-    it 'Should return \'true\' since none of its values is a multiple of 10' do
+    it 'Should return \'true\' if none of its values returns true from the block' do
       expect(arr_num.my_none? { |obj| (obj % 10).zero? }).to eql(arr_num.none? { |obj| (obj % 10).zero? })
     end
 
-    it 'Should return \'false\' since at least one of its values is \'truthy\'' do
+    it 'Should return \'false\' if any of its values is truthy' do
       expect(arr_empty.my_none?).to eql(arr_empty.none?)
     end
 
-    it 'Should return \'false\' since at least one of its values is 4' do
+    it 'Should return \'false\' if any of the values is equal to the argument' do
       expect(arr_num.my_none?(4)).to eql(arr_num.none?(4))
     end
 
-    it 'Should return \'true\' since none of its values starts or ends with \'a\'' do
+    it 'Should return \'true\' if none of the values match with the RegExp pattern' do
       expect(arr_animals.my_none?(/(^a|a$)/)).to eql(arr_animals.none?(/(^a|a$)/))
     end
 
-    it 'Should return \'true\' since none of its values is a Float' do
+    it 'Should return \'true\' if none of the values is an instance of the given class' do
       expect(arr_empty.my_none?(Float)).to eql(arr_empty.none?(Float))
     end
 
-    it 'Should return \'false\' since at least one of its key names is longer than 5 and ends without \'!\' or \'?\'' do
+    it 'Should return \'false\' if any of its values returns true from the block' do
       eval = proc { |obj| (obj[0].length > 5) && (obj[1] =~ /[^\!\?]$/) }
       expect(hash_word.my_none?(&eval)).to eql(hash_word.none?(&eval))
     end
 
-    it 'Should return true because they aren\'t truthy objects' do
+    it 'Should return true if there are no truthy values' do
       expect(arr_false.my_none?).to eql(arr_false.none?)
     end
   end
@@ -155,40 +167,40 @@ describe Enumerable do
       expect(arr_num.my_count).to eql(arr_num.count)
     end
 
-    it 'Should return \'1\' since there\'s only one \'2.345\'' do
+    it 'Should return the number of elements equal to the argument' do
       expect(arr_types.my_count(2.345)).to eql(arr_types.count(2.345))
     end
 
-    it 'Should return \'3\' since there\'s three symbols inside' do
+    it 'Should return the number of elements that return true from the block' do
       expect(arr_types.my_count { |v| v.is_a? Symbol }).to eql(arr_types.count { |v| v.is_a? Symbol })
     end
   end
 
   context '#my_map' do
-    it 'Should return an Array with every number multiplied by itself' do
+    it 'Should return an Array with every number replaced by the return value of the block' do
       expect(arr_num.my_map { |v| v * v }).to eql(arr_num.map { |v| v * v })
     end
 
-    it 'Should use the \'proc\' and change every word with its first letter' do
+    it 'Should use the \'proc\' and do the same' do
       block = proc { |w| w[0] }
       expect(arr_word.my_map(&block)).to eql(arr_word.map(&block))
     end
   end
 
   context '#my_inject' do
-    it 'Should return the sum of all numbers' do
+    it 'Should return a single value defined by the argument method' do
       expect(arr_num.my_inject(:+)).to eql(arr_num.inject(:+))
     end
 
-    it 'Should return the sum of all numbers starting with 10' do
+    it 'Should return a single value defined by the initial value and the argument method' do
       expect(arr_num.my_inject(10, :+)).to eql(arr_num.inject(10, :+))
     end
 
-    it 'Should return an Integer which includes all the array numbers' do
+    it 'Should return a single value defined by the given block' do
       expect(arr_num.my_inject { |memo, val| memo * 10 + val }).to eql(arr_num.inject { |memo, val| memo * 10 + val })
     end
 
-    it 'Should return the Integer \'98765432100123456789\'' do
+    it 'Should return a single value defined by the initial value and the block' do
       block = proc { |memo, val| memo * 10 + val }
       expect(arr_num.my_inject(9_876_543_210, &block)).to eql(arr_num.inject(9_876_543_210, &block))
     end

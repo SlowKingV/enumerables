@@ -1,6 +1,6 @@
 module Enumerable
   def my_each
-    return to_enum unless block_given?
+    return to_enum(:my_each) unless block_given?
 
     i = 0
     arr = to_a
@@ -11,7 +11,7 @@ module Enumerable
   end
 
   def my_each_with_index
-    return to_enum unless block_given?
+    return to_enum(:my_each_with_index) unless block_given?
 
     arr = to_a
     i = 0
