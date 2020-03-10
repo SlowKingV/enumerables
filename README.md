@@ -10,7 +10,7 @@
 
 ## Getting Started
 
-*You can either clone or download the ruby files (.rb). Make sure that ***test_cases.rb*** is in the same folder as ***enumerables.rb****
+*You can either clone or download the ruby files (.rb). Make sure that ***spec/*** directory is in the same folder as ***enumerables.rb****
 
 
 To get a local copy up and running follow these simple example steps.
