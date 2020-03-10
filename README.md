@@ -8,25 +8,21 @@
 - Ruby.
 - VSCode
 
-## Demo
-
-You can try the code here:
-[![Run on Repl.it](https://repl.it/badge/github/SlowKingV/enumerables)](https://repl.it/github/SlowKingV/enumerables)
-
-
 ## Getting Started
 
-*You can either clone or download the ruby files (.rb). Make sure that ***test_cases.rb*** is in the same folder as ***enumerables.rb****
+*You can either clone or download the ruby files (.rb). Make sure that ***spec/*** directory is in the same folder as ***enumerables.rb****
 
 
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
-- You need to have ***Ruby*** installed on your machine. ([Check this link](https://www.ruby-lang.org/en/documentation/installation/) for instructions on installing ruby)
+- You need to have ***Ruby*** installed on your machine. [Check this link](https://www.ruby-lang.org/en/documentation/installation/) for instructions on installing ruby
+- [Optional] To run tests you need to install RSpec. Check out the [RSpec Homepage](https://rspec.info/) for instructions on installing and using it.
 
 ### Run tests
-- The file `test_cases.rb` includes several tests for all the methods and each one of them has its expected output inside a comment at the end of line.
-- To write your custom test cases in a different file, just make sure your file starts with `require "./enumerables.rb"`, if your file is in a different location, make sure to add its relative or absolute path to this property.
+- Use the command `$ rspec` to run the tests inside `spec/` directory which includes several tests for all the methods and its explanation.
+- To write your custom test cases in a different file, just make sure your file is inside the `/spec` folder and starts with `require './enumerables.rb'`.
+- To add custom test cases to the original file, make sure you add them inside the right `context '[method]' do` block where `[method]` is the method you want to test. Use the `it '...' do` block to define a new test case and add your description of it inside. Use a single `it` block for each test case.
 
 
 ## Authors
