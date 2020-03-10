@@ -44,7 +44,9 @@ puts [1, 2, 3, 4, 5, 6, 7, 8, 9].my_all?(Numeric)
 puts(greet.my_all? { |obj| (obj[0].is_a? Symbol) && /^h/.match?(obj[1]) })
 # => Should print 'true' since every key is a Symbol and every value starts with an 'h'
 puts [false, false, false, false, false, false].my_all?
-# => Should print false because even if they are all the same object they aren't truthy objects
+# => Should print false because they aren't truthy objects
+puts [false, false, false, false, false, false].my_all?(false)
+# => Should print true because they all are 'false'
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 
 puts 'TESTING my_any?'
@@ -60,7 +62,7 @@ puts [nil, false, [], 0, ''].my_any?(Float)
 # => Should print 'false' since none of its values is a Float
 puts(greet.my_any? { |obj| (obj[0] == :question) && /\?$/.match?(obj[1]) })
 # => Should print 'true' since at least one of its keys is called :question and its value ends with '?'
-puts [false, false, false, false, false, false].my_all?
+puts [false, false, false, false, false, false].my_any?
 # => Should print false because even if they are all the same object they aren't truthy objects
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 
@@ -77,8 +79,8 @@ puts [nil, false, [], 0, ''].my_none?(Float)
 # => Should print 'true' since none of its values is a Float
 puts(greet.my_none? { |obj| (obj[0].length > 5) && (obj[1] =~ /[^\!\?]$/) })
 # => Should print 'false' since at least one of its key names is longer than 5 and ends without '!' or '?'
-puts [false, false, false, false, false, false].my_all?
-# => Should print true because even if they are all the same object they aren't truthy objects
+puts [false, false, false, false, false, false].my_none?
+# => Should print true because they aren't truthy objects
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 
 puts 'TESTING my_count'

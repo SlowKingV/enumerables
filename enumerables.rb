@@ -1,10 +1,9 @@
 module Enumerable
   def my_each
-    return to_enum unless block_given?
+    return to_enum(:my_each) unless block_given?
 
     i = 0
     arr = to_a
-    arr.flatten! if is_a? Hash
     while i < arr.length
       yield(arr[i])
       i += 1
@@ -12,7 +11,7 @@ module Enumerable
   end
 
   def my_each_with_index
-    return to_enum unless block_given?
+    return to_enum(:my_each_with_index) unless block_given?
 
     arr = to_a
     i = 0
@@ -27,15 +26,16 @@ module Enumerable
 
     match = []
     if is_a? Hash
-      to_a.my_each { |obj| match << [obj[0], obj[1]] if yield(obj[0], obj[1]) }
+      my_each { |obj| match << [obj[0], obj[1]] if yield(obj[0], obj[1]) }
+      match.to_h
     else
-      to_a.my_each { |val| match << val if yield(val) }
+      my_each { |val| match << val if yield(val) }
+      match
     end
-    match
   end
 
   def pattern_match(pattern, val, block)
-    if pattern
+    if !pattern.nil?
       if pattern.is_a? Class then val.is_a? pattern
       elsif pattern.is_a? Regexp then pattern.match?(val)
       else val == pattern
@@ -96,7 +96,7 @@ module Enumerable
     case args.size
     when 1
       if block_given? then arr.unshift(args[0])
-      else opr = args [0]
+      else opr = args[0]
       end
     when 2
       opr = args[1]
@@ -112,4 +112,8 @@ module Enumerable
     end
     memo
   end
+end
+
+def multiply_els(arr)
+  arr.my_inject(:*)
 end
