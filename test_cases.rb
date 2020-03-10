@@ -79,8 +79,8 @@ puts [nil, false, [], 0, ''].my_none?(Float)
 # => Should print 'true' since none of its values is a Float
 puts(greet.my_none? { |obj| (obj[0].length > 5) && (obj[1] =~ /[^\!\?]$/) })
 # => Should print 'false' since at least one of its key names is longer than 5 and ends without '!' or '?'
-puts [false, false, false, false, false, false].my_all?
-# => Should print true because even if they are all the same object they aren't truthy objects
+puts [false, false, false, false, false, false].my_none?
+# => Should print true because they aren't truthy objects
 puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 
 puts 'TESTING my_count'

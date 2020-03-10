@@ -113,3 +113,7 @@ module Enumerable
     memo
   end
 end
+
+def multiply_els(arr)
+  arr.my_inject(:*)
+end
