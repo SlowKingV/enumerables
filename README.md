@@ -8,11 +8,6 @@
 - Ruby.
 - VSCode
 
-## Demo
-
-[Live Demo Link](https://livedemo.com)
-
-
 ## Getting Started
 
 *You can either clone or download the ruby files (.rb). Make sure that ***test_cases.rb*** is in the same folder as ***enumerables.rb****
