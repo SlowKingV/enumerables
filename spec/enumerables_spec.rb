@@ -38,7 +38,7 @@ describe Enumerable do
       hash_clo.each_with_index { |h, i| expected << "#{i}: #{h}\n" }
       expect { hash_clo.my_each_with_index { |h, i| puts "#{i}: #{h}" } }.to output(expected).to_stdout
     end
-  end 
+  end
 
   context '#my_select' do
     it 'Returns every value that is bigger than 3' do
